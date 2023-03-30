@@ -6,6 +6,7 @@ const BUID_DIR = path.resolve(__dirname + "../../../../target/classes/static");
 module.exports = {
     mode: 'development',
     entry: {
+        app: path.resolve(__dirname, './src/app/index.tsx'),
         login: path.resolve(__dirname, './src/login/index.tsx'),
     },
     resolve: {

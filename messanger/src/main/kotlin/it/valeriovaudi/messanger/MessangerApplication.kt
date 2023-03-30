@@ -19,10 +19,21 @@ fun main(args: Array<String>) {
 class IndexController {
 
     @ModelAttribute("assetBundle")
-    fun indexBundle() = "login_bundle.js"
+    fun indexBundle() = "app_bundle.js"
 
     @GetMapping("/index")
     fun index() = "index"
+}
+
+@Controller
+class LoginController {
+
+    @ModelAttribute("assetBundle")
+    fun indexBundle() = "login_bundle.js"
+
+    @GetMapping("/login")
+    fun login() = "index"
+
 }
 
 @ControllerAdvice
