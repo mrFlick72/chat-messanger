@@ -4,15 +4,19 @@ import {Box, Button, Divider, TextField} from "@mui/material";
 
 const Login = () => {
     return <Box>
-        <form action="login" method="post">
+        <form action="/login" method="post">
             <Box>
-                <TextField id="username"
-                           label="Username"
-                           type="text"/>
+                <TextField
+                    name="username"
+                    id="username"
+                    label="Username"
+                    type="text"/>
 
-                <TextField id="password"
-                           label="password"
-                           type="password"/>
+                <TextField
+                    name="password"
+                    id="password"
+                    label="password"
+                    type="password"/>
 
                 <Divider/>
 

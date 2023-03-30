@@ -21,8 +21,11 @@ import java.util.concurrent.ConcurrentHashMap
 class AccountServiceApplication {
 
     @Bean
-    fun grpcServer(serverProperties: ServerProperties) =
-        GrpcServerStarter(serverProperties, InMemoryAccountRepository(ConcurrentHashMap()))
+    fun grpcServer(serverProperties: ServerProperties): GrpcServerStarter {
+        val storage = ConcurrentHashMap<String, Account>()
+        storage["vvaudi"] = Account("vvaudi", "secret")
+        return GrpcServerStarter(serverProperties, InMemoryAccountRepository(storage))
+    }
 
 }
 
