@@ -39,7 +39,6 @@ interface AccountRepository {
     fun find(username: String): Account
 }
 
-
 class InMemoryAccountRepository(private val storage: ConcurrentHashMap<String, Account>) : AccountRepository {
 
     override fun find(username: String): Account = storage[username]!!
@@ -59,8 +58,7 @@ class GrpcServerStarter(
         ServerBuilder
             .forPort(serverProperties.port)
             .addService(GrpcAccountsService(accountRepository))
-            .build()
-            .let { it.start().awaitTermination() }
+            .build().start().awaitTermination()
     }
 }
 

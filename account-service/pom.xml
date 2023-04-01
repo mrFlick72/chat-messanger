@@ -59,6 +59,11 @@
             <scope>runtime</scope>
         </dependency>
 
+        <dependency>
+            <groupId>org.springframework.kafka</groupId>
+            <artifactId>spring-kafka</artifactId>
+        </dependency>
+
         <!--        grpc deps start -->
         <dependency>
             <groupId>com.google.protobuf</groupId>
