@@ -1,11 +1,13 @@
 server:
-  port: 6060
+  port: 7070
 
 
 spring:
   application:
-    name: account-service
+    name: room-service
   kafka:
     consumer:
       key-deserializer:  org.apache.kafka.common.serialization.StringDeserializer
       value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        group.id: test
