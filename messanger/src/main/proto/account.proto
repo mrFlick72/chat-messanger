@@ -14,5 +14,5 @@ message LoginResponse {
 
 service AccountsService {
 
-  rpc Login (LoginRequest) returns (LoginResponse) {}
+  rpc login (LoginRequest) returns (LoginResponse) {}
 }
