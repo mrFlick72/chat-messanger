@@ -28,19 +28,24 @@ class RoomServiceApplication {
     fun roomRepository(): RoomRepository = InMemoryRoomRepository()
 }
 
+fun main(args: Array<String>) {
+    runApplication<RoomServiceApplication>(*args)
+}
+
 class InMemoryRoomRepository : RoomRepository {
     override fun createNewRoom(room: Room): RoomId {
         TODO("Not yet implemented")
     }
 
-    override fun findRoomFor(userName: String, guestUsername: String): RoomId {
+    override fun findRoomFor(userName: String, guestUsername: String): Room {
         TODO("Not yet implemented")
     }
 
-}
 
-fun main(args: Array<String>) {
-    runApplication<RoomServiceApplication>(*args)
+    override fun findRoomFor(userName: String): List<Room> {
+        TODO("Not yet implemented")
+    }
+
 }
 
 class GrpcServerStarter(
@@ -59,10 +64,14 @@ class GrpcServerStarter(
     }
 }
 
-data class Room(val userName: String, val guestUsername: String)
+data class Room(val id: RoomId = RoomId.empty(), val userName: String, val guestUsername: String, val accepted: Boolean)
 
 @JvmInline
-value class RoomId(val content: String)
+value class RoomId(val content: String) {
+    companion object {
+        fun empty() = RoomId("")
+    }
+}
 
 @JvmInline
 value class Message(val content: String)
@@ -74,7 +83,8 @@ interface MessageRepository {
 
 interface RoomRepository {
     fun createNewRoom(room: Room): RoomId
-    fun findRoomFor(userName: String, guestUsername: String): RoomId
+    fun findRoomFor(userName: String, guestUsername: String): Room
+    fun findRoomFor(userName: String): List<Room>
 
 }
 
@@ -83,7 +93,14 @@ class GrpcRoomService(private val roomRepository: RoomRepository) : RoomServiceG
         request: CreateRoomInvitationRequest,
         responseObserver: StreamObserver<CreateRoomInvitationResponse>
     ) {
-        val roomId = roomRepository.createNewRoom(Room(request.myUsername, request.guestUsername))
+        val roomId =
+            roomRepository.createNewRoom(
+                Room(
+                    userName = request.myUsername,
+                    guestUsername = request.guestUsername,
+                    accepted = false
+                )
+            )
         val roomInvitationResponse = newBuilder().setRoomId(roomId.content).build()
         responseObserver.onNext(roomInvitationResponse)
         responseObserver.onCompleted()
