@@ -47,6 +47,7 @@ class AccountServiceApplication {
     @Bean
     fun grpcServer(serverProperties: ServerProperties): GrpcServerStarter {
         val storage = ConcurrentHashMap<String, Account>()
+        storage["admin"] = Account("admin", "secret")
         storage["vvaudi"] = Account("vvaudi", "secret")
         return GrpcServerStarter(serverProperties, InMemoryAccountRepository(storage))
     }
