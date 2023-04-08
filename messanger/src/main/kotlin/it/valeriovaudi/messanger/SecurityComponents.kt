@@ -59,7 +59,7 @@ class AccountServiceAuthenticationProvider(private val accountService: GrpcAccou
                 UsernamePasswordAuthenticationToken.authenticated(
                     authentication.name,
                     "",
-                    listOf(SimpleGrantedAuthority("ROLE_USER"))
+                    listOf(SimpleGrantedAuthority("USER"))
                 )
             }
             .orElseThrow {

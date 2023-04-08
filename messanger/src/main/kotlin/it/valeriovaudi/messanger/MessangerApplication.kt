@@ -44,4 +44,3 @@ class MessangerApplication {
 fun main(args: Array<String>) {
     runApplication<MessangerApplication>(*args)
 }
-

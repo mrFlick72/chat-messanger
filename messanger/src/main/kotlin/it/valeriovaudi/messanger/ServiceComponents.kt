@@ -28,7 +28,7 @@ class GeneratorTest(val kafkaTemplate: KafkaTemplate<String, ByteArray>) : Appli
         val messagePayload = loginRequest.toByteArray()
         println("send message")
         println(messagePayload)
-        kafkaTemplate.send("account-invitation", "${loginRequest.username}-${UUID.randomUUID()}", messagePayload)
+        kafkaTemplate.send("account-invitation", "${loginRequest.username}-${UUID.randomUUID().toString()}", messagePayload)
     }
 
 }
