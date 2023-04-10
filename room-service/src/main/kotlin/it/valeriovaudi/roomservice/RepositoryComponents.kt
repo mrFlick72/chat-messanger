@@ -3,6 +3,7 @@ package it.valeriovaudi.roomservice
 import io.grpc.ManagedChannel
 import it.valeriovaudi.account.model.AccountsServiceGrpc
 import it.valeriovaudi.account.model.ExistRequest
+import java.util.*
 
 
 interface MessageRepository {
@@ -17,10 +18,13 @@ interface RoomRepository {
 
 }
 
-class InMemoryRoomRepository : RoomRepository {
-    override fun createNewRoom(room: Room): RoomId {
-        TODO("Not yet implemented")
-    }
+class InMemoryRoomRepository(private val roomStorage: MutableMap<RoomId, Room>) : RoomRepository {
+    override fun createNewRoom(room: Room): RoomId =
+        RoomId(UUID.randomUUID().toString())
+            .let {
+                roomStorage[it] = room
+                it
+            }
 
     override fun findRoomFor(userName: String, guestUsername: String): Room {
         TODO("Not yet implemented")

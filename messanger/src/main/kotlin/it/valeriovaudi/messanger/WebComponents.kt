@@ -1,9 +1,11 @@
 package it.valeriovaudi.messanger
 
+import it.valeriovaudi.room.model.CreateRoomInvitationRequest
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
 import org.springframework.web.bind.annotation.*
+import java.security.Principal
 
 
 @Controller
@@ -19,9 +21,18 @@ class IndexController {
 
 
 @RestController
-class RoomEndPoint {
+class RoomEndPoint(val roomService: GrpcRoomService) {
     @PostMapping("/room")
-    fun createNewRoom() {
+    fun createNewRoom(
+        principal: Principal,
+        @RequestBody guestUserName: String
+    ) {
+        val request = CreateRoomInvitationRequest
+            .newBuilder()
+            .setMyUsername(principal.name)
+            .setGuestUsername(guestUserName)
+            .build()
+        roomService.createNewRoomFor(request)
         println("DONE")
         ResponseEntity.ok().build<Unit>()
     }

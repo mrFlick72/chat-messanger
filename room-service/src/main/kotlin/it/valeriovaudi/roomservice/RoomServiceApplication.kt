@@ -26,7 +26,7 @@ class RoomServiceApplication {
     }
 
     @Bean
-    fun roomRepository(): RoomRepository = InMemoryRoomRepository()
+    fun roomRepository(): RoomRepository = InMemoryRoomRepository(mutableMapOf())
 
     @Bean
     fun roomService(accountRepository: AccountRepository, roomRepository: RoomRepository) =

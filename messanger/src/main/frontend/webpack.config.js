@@ -25,8 +25,9 @@ module.exports = {
             {
                 test: /\.css$/,
                 use: ['style-loader', 'css-loader']
+
             },
-            {
+            /*{
                 test: path.join(__dirname, "."),
                 exclude: path.resolve(__dirname, "node_modules"),
                 use: {
@@ -36,7 +37,7 @@ module.exports = {
                     }
                 }
 
-            }
+            }*/
         ]
     },
     output: {
