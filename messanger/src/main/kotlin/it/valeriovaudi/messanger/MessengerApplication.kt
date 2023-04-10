@@ -12,7 +12,7 @@ import org.springframework.kafka.core.KafkaAdmin
 
 
 @SpringBootApplication
-class MessangerApplication {
+class MessengerApplication {
     @Bean
     fun admin(): KafkaAdmin {
         val configs: MutableMap<String, Any> = HashMap()
@@ -28,8 +28,9 @@ class MessangerApplication {
             .compact()
             .build()
     }
+
     @Bean
-    fun client(): GrpcAccountsService {
+    fun accountsService(): GrpcAccountsService {
         val channel: ManagedChannel = ManagedChannelBuilder
             .forAddress("localhost", 6060)
             .usePlaintext()
@@ -38,9 +39,21 @@ class MessangerApplication {
     }
 
     @Bean
-    fun accountAuthenticationProvider(client: GrpcAccountsService) = AccountServiceAuthenticationProvider(client)
+    fun roomService(): GrpcRoomService {
+        val channel: ManagedChannel = ManagedChannelBuilder
+            .forAddress("localhost", 7070)
+            .usePlaintext()
+            .build()
+        return GrpcRoomService(channel)
+    }
+
+    @Bean
+    fun accountAuthenticationProvider(accountsService: GrpcAccountsService) =
+        AccountServiceAuthenticationProvider(accountsService)
+
+
 }
 
 fun main(args: Array<String>) {
-    runApplication<MessangerApplication>(*args)
+    runApplication<MessengerApplication>(*args)
 }

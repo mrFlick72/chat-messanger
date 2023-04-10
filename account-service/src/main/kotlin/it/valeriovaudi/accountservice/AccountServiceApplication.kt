@@ -3,8 +3,8 @@ package it.valeriovaudi.accountservice
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
 import it.valeriovaudi.account.model.AccountsServiceGrpc
+import it.valeriovaudi.account.model.GenericResponse
 import it.valeriovaudi.account.model.LoginRequest
-import it.valeriovaudi.account.model.LoginResponse
 import org.apache.kafka.clients.admin.AdminClientConfig
 import org.apache.kafka.clients.admin.NewTopic
 import org.slf4j.LoggerFactory
@@ -89,10 +89,10 @@ class GrpcServerStarter(
 
 class GrpcAccountsService(private val accountRepository: AccountRepository) :
     AccountsServiceGrpc.AccountsServiceImplBase() {
-    override fun login(request: LoginRequest, responseObserver: StreamObserver<LoginResponse>) {
+    override fun login(request: LoginRequest, responseObserver: StreamObserver<GenericResponse>) {
         val account = accountRepository.find(request.username)
         if (account.password == request.password) {
-            val reply = LoginResponse.newBuilder().setMessage("SUCCESS").build()
+            val reply = GenericResponse.newBuilder().setMessage("SUCCESS").build()
             responseObserver.onNext(reply)
         } else {
             responseObserver.onError(RuntimeException())

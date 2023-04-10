@@ -5,8 +5,8 @@ import io.grpc.ManagedChannelBuilder
 import io.grpc.Server
 import io.grpc.ServerBuilder
 import it.valeriovaudi.account.model.AccountsServiceGrpc.newBlockingStub
+import it.valeriovaudi.account.model.GenericResponse
 import it.valeriovaudi.account.model.LoginRequest
-import it.valeriovaudi.account.model.LoginResponse
 import org.junit.jupiter.api.AfterEach
 import org.junit.jupiter.api.Assertions
 import org.junit.jupiter.api.BeforeEach
@@ -52,6 +52,6 @@ class AccountsServiceTest {
                     .build()
             )
 
-        Assertions.assertEquals(response, LoginResponse.newBuilder().setMessage("SUCCESS").build())
+        Assertions.assertEquals(response, GenericResponse.newBuilder().setMessage("SUCCESS").build())
     }
 }

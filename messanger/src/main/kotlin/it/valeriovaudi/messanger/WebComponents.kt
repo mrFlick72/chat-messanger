@@ -3,10 +3,7 @@ package it.valeriovaudi.messanger
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.http.ResponseEntity
 import org.springframework.stereotype.Controller
-import org.springframework.web.bind.annotation.ControllerAdvice
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.ModelAttribute
-import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.*
 
 
 @Controller
@@ -18,8 +15,16 @@ class IndexController {
     @GetMapping("/index")
     fun index() = "index"
 
-    @PostMapping("/create-new-room")
-    fun createNewRoom() = ResponseEntity.ok().build<Unit>()
+}
+
+
+@RestController
+class RoomEndPoint {
+    @PostMapping("/room")
+    fun createNewRoom() {
+        println("DONE")
+        ResponseEntity.ok().build<Unit>()
+    }
 }
 
 @Controller
