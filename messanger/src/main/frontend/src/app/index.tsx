@@ -8,6 +8,11 @@ const Application = () => {
     const createRoom = () => {
         console.log("click")
         console.log(`userName: ${userName}`)
+        fetch("/room", {
+            method: "POST",
+            credentials: "same-origin",
+            body: userName
+        })
     }
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {

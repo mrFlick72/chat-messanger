@@ -26,15 +26,16 @@ class RoomEndPoint(val roomService: GrpcRoomService) {
     fun createNewRoom(
         principal: Principal,
         @RequestBody guestUserName: String
-    ) {
+    ): ResponseEntity<String> {
         val request = CreateRoomInvitationRequest
             .newBuilder()
             .setMyUsername(principal.name)
             .setGuestUsername(guestUserName)
             .build()
-        roomService.createNewRoomFor(request)
-        println("DONE")
-        ResponseEntity.ok().build<Unit>()
+        println("NEW ROOM REQUESTED FROM ${principal.name} FOR $guestUserName")
+        val newRoomFor = roomService.createNewRoomFor(request)
+        println(newRoomFor)
+        return ResponseEntity.ok(newRoomFor.get().roomId)
     }
 }
 

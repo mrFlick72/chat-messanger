@@ -45,7 +45,6 @@ interface AccountRepository {
 class GrpcAccountRepository(private val channel: ManagedChannel) : AccountRepository {
 
     override fun exist(userName: String): Boolean {
-
         val accountsServiceBlockingStub = AccountsServiceGrpc.newBlockingStub(channel)
         accountsServiceBlockingStub.exist(ExistRequest.newBuilder().setUsername(userName).build())
         return true

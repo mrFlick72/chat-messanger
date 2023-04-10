@@ -37,7 +37,7 @@ class SecurityConfig(
         http.authorizeHttpRequests { authz ->
             authz.requestMatchers("/asset/**").permitAll()
             authz.requestMatchers("/login").permitAll()
-            authz.requestMatchers("/index").authenticated()
+            authz.anyRequest().authenticated()
         }
 
         return http.build()

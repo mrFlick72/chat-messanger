@@ -93,26 +93,33 @@ class GrpcAccountsService(private val accountRepository: AccountRepository) :
     AccountsServiceGrpc.AccountsServiceImplBase() {
     override fun login(request: LoginRequest, responseObserver: StreamObserver<GenericResponse>) {
         accountRepository.find(request.username)
-            .ifPresent {
+            .ifPresentOrElse({
                 if (it.password == request.password) {
                     val reply = GenericResponse.newBuilder().setMessage("SUCCESS").build()
                     responseObserver.onNext(reply)
                 } else {
                     responseObserver.onError(RuntimeException())
                 }
-            }
+                responseObserver.onCompleted()
+            }, {
+                responseObserver.onError(RuntimeException("Account not found"))
+                responseObserver.onCompleted()
+            })
 
-        responseObserver.onCompleted()
+
     }
 
     override fun exist(request: ExistRequest, responseObserver: StreamObserver<GenericResponse>) {
         accountRepository.find(request.username)
             .ifPresentOrElse(
                 {
+                    val reply = GenericResponse.newBuilder().setMessage("SUCCESS").build()
+                    responseObserver.onNext(reply)
                     responseObserver.onCompleted()
                 },
                 {
                     responseObserver.onError(RuntimeException("Account not found"))
+                    responseObserver.onCompleted()
                 }
             )
     }
