@@ -3,6 +3,7 @@ package it.valeriovaudi.accountservice
 import io.grpc.ServerBuilder
 import io.grpc.stub.StreamObserver
 import it.valeriovaudi.account.model.AccountsServiceGrpc
+import it.valeriovaudi.account.model.ExistRequest
 import it.valeriovaudi.account.model.GenericResponse
 import it.valeriovaudi.account.model.LoginRequest
 import org.apache.kafka.clients.admin.AdminClientConfig
@@ -20,6 +21,7 @@ import org.springframework.kafka.config.TopicBuilder
 import org.springframework.kafka.core.KafkaAdmin
 import org.springframework.kafka.support.KafkaHeaders
 import org.springframework.messaging.handler.annotation.Header
+import java.util.*
 import java.util.concurrent.ConcurrentHashMap
 
 @SpringBootApplication
@@ -61,12 +63,12 @@ fun main(args: Array<String>) {
 data class Account(val username: String, val password: String)
 
 interface AccountRepository {
-    fun find(username: String): Account
+    fun find(username: String): Optional<Account>
 }
 
 class InMemoryAccountRepository(private val storage: ConcurrentHashMap<String, Account>) : AccountRepository {
 
-    override fun find(username: String): Account = storage[username]!!
+    override fun find(username: String): Optional<Account> = Optional.ofNullable(storage[username])
 
 
 }
@@ -90,15 +92,29 @@ class GrpcServerStarter(
 class GrpcAccountsService(private val accountRepository: AccountRepository) :
     AccountsServiceGrpc.AccountsServiceImplBase() {
     override fun login(request: LoginRequest, responseObserver: StreamObserver<GenericResponse>) {
-        val account = accountRepository.find(request.username)
-        if (account.password == request.password) {
-            val reply = GenericResponse.newBuilder().setMessage("SUCCESS").build()
-            responseObserver.onNext(reply)
-        } else {
-            responseObserver.onError(RuntimeException())
-        }
+        accountRepository.find(request.username)
+            .ifPresent {
+                if (it.password == request.password) {
+                    val reply = GenericResponse.newBuilder().setMessage("SUCCESS").build()
+                    responseObserver.onNext(reply)
+                } else {
+                    responseObserver.onError(RuntimeException())
+                }
+            }
 
         responseObserver.onCompleted()
+    }
+
+    override fun exist(request: ExistRequest, responseObserver: StreamObserver<GenericResponse>) {
+        accountRepository.find(request.username)
+            .ifPresentOrElse(
+                {
+                    responseObserver.onCompleted()
+                },
+                {
+                    responseObserver.onError(RuntimeException("Account not found"))
+                }
+            )
     }
 }
 
